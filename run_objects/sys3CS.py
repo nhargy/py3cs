@@ -142,7 +142,7 @@ class sys3CS:
         
         
         
-    def get_state(self):
+    def get_state(self, get_tuple = False):
         
         dt_state = np.dtype([('source_power',  np.unicode_, 16),
                              ('source_shutter_control', np.unicode_, 16),
@@ -170,37 +170,69 @@ class sys3CS:
                              ('pm_t_count', np.unicode_,16)
                              ])
         
-        np_state = np.array([(self.source_power,
-                              self.source_shutter_control,
-                              self.source_shutter_on,
-                              self.spf,
-                              self.lpf,
-                              self.lpf2,
-                              self.flipperA,
-                              self.flipperB,
-                              self.mono_wl,
-                              self.mono_gr,
-                              self.mono_slit,
-                              self.spec_gr,
-                              self.spec_shutter,
-                              self.spec_wl,
-                              self.spec_exp,
-                              self.pm_a_wl,
-                              self.pm_a_unit,
-                              self.pm_a_count,
-                              self.pm_b_wl,
-                              self.pm_b_unit,
-                              self.pm_b_count,
-                              self.pm_t_wl,
-                              self.pm_t_unit,
-                              self.pm_t_count
-                              )], 
-                            dtype = dt_state)
+        if get_tuple == False:
+            np_state = np.array([(self.source_power,
+                                self.source_shutter_control,
+                                self.source_shutter_on,
+                                self.spf,
+                                self.lpf,
+                                self.lpf2,
+                                self.flipperA,
+                                self.flipperB,
+                                self.mono_wl,
+                                self.mono_gr,
+                                self.mono_slit,
+                                self.spec_gr,
+                                self.spec_shutter,
+                                self.spec_wl,
+                                self.spec_exp,
+                                self.pm_a_wl,
+                                self.pm_a_unit,
+                                self.pm_a_count,
+                                self.pm_b_wl,
+                                self.pm_b_unit,
+                                self.pm_b_count,
+                                self.pm_t_wl,
+                                self.pm_t_unit,
+                                self.pm_t_count
+                                )], 
+                                dtype = dt_state)
+            
+            logprint(f"Retrieved system state: {np_state}", self.log_target, toprint=False)
+
+            return np_state
         
-        logprint(f"Retrieved system state: {np_state}", self.log_target, toprint=False)
+        elif get_tuple == True:
+            tup_state = (
+                        self.source_power,
+                        self.source_shutter_control,
+                        self.source_shutter_on,
+                        self.spf,
+                        self.lpf,
+                        self.lpf2,
+                        self.flipperA,
+                        self.flipperB,
+                        self.mono_wl,
+                        self.mono_gr,
+                        self.mono_slit,
+                        self.spec_gr,
+                        self.spec_shutter,
+                        self.spec_wl,
+                        self.spec_exp,
+                        self.pm_a_wl,
+                        self.pm_a_unit,
+                        self.pm_a_count,
+                        self.pm_b_wl,
+                        self.pm_b_unit,
+                        self.pm_b_count,
+                        self.pm_t_wl,
+                        self.pm_t_unit,
+                        self.pm_t_count
+                        )
 
-        return np_state
+            logprint(f"Retrieved system state: {tup_state}", self.log_target, toprint=False)
 
+            return tup_state, dt_state
 
     def ctrl(self,
              source_power           = None,
@@ -470,14 +502,68 @@ class sys3CS:
                     self.s.spectro.saved     = True     ; time.sleep(1)
                     logprint(f"Saved spectrum to {spec_save}", self.log_target)
                     
-                    while not os.path.exists(spec_save) == False:
+                    while os.path.exists(spec_save) == False:
                         logprint(f"Waiting for {spec_save} to be created")
-                    
-                    
+                        
+                    logprint(f"Solis file created.", self.log_target)
+                    try:
+                        tup_state, dt_state            = self.get_state(get_tuple=True)
+                        solis_tuple, dt_solis, np_data = read_solis_txt(spec_save)
+                        logprint("Extracted data and metadata", self.log_target)
+                        return solis_tuple, tup_state, np_data
+                    except Exception as e:
+                        logprint("FAILED to extract data and metadata", self.log_target)
+                        logprint(e, self.log_target)
+                        return None
                     
                 except:
-                    pass
-                           
-        return None
+                    logprint("Failed to issue command", self.log_target)
+            else:
+                logprint("INPUT ERROR: spec_save must be a string", self.log_target)  
     
     
+        # power metres
+        if pm_a_wl != None:
+            if self.pm_a_wl == pm_a_wl:
+                logprint(f"pm_a_wl already set to {pm_a_wl}", self.log_target)
+            else:
+                if (type(pm_a_wl) == int) and (250 <= pm_a_wl <= 800):
+                    logprint(f"Setting pm_a_wl to {pm_a_wl}", self.log_target)
+                    try:
+                        self.s.power_meter_a.wavelength = pm_a_wl   # issue command
+                        self.pm_a_wl                    = pm_a_wl   # update self state
+                        logprint("Set", self.log_target)
+                    except:
+                        logprint("Failed to issue command", self.log_target)
+                else:
+                    logprint("INPUT ERROR: pm_a_wl must be an integer", self.log_target)        
+
+        if pm_b_wl != None:
+            if self.pm_b_wl == pm_b_wl:
+                logprint(f"pm_b_wl already set to {pm_b_wl}", self.log_target)
+            else:
+                if (type(pm_b_wl) == int) and (250 <= pm_b_wl <= 800):
+                    logprint(f"Setting pm_b_wl to {pm_b_wl}", self.log_target)
+                    try:
+                        self.s.power_meter_b.wavelength = pm_b_wl   # issue command
+                        self.pm_b_wl                    = pm_b_wl   # update self state
+                        logprint("Set", self.log_target)
+                    except:
+                        logprint("Failed to issue command", self.log_target)
+                else:
+                    logprint("INPUT ERROR: pm_b_wl must be an integer", self.log_target) 
+                    
+        if pm_t_wl != None:
+            if self.pm_t_wl == pm_t_wl:
+                logprint(f"pm_t_wl already set to {pm_t_wl}", self.log_target)
+            else:
+                if (type(pm_t_wl) == int) and (250 <= pm_t_wl <= 800):
+                    logprint(f"Setting pm_t_wl to {pm_t_wl}", self.log_target)
+                    try:
+                        self.s.power_meter_t.wavelength = pm_t_wl   # issue command
+                        self.pm_t_wl                    = pm_t_wl   # update self state
+                        logprint("Set", self.log_target)
+                    except:
+                        logprint("Failed to issue command", self.log_target)
+                else:
+                    logprint("INPUT ERROR: pm_t_wl must be an integer", self.log_target) 

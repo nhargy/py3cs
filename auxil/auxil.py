@@ -87,7 +87,7 @@ def logprint(string, target, toprint=True, gp = 'log', ds = 'sys_log'):
             f.close()
             
             if toprint:
-                print(date_time + ' [LOG]', string)
+                print(date_time + ' [+]', string)
             
         except Exception as e:
             # close hdf5 file if managed to open in try
@@ -117,13 +117,26 @@ def read_solis_txt(filepath):
     solis       = open(filepath, 'r')
     solis_lines = solis.readlines()
     
-    # construct metadata np array
+    # construct metadata tuple and dtype
     solis_tuple = ()
+    dt_solis    = np.dtype([])
     count       = 0
     for key in solis_keys:
-        val = solis_lines[count].split(f'{key}:')[1].strip()
+        
+        val         = solis_lines[count].split(f'{key}:')[1].strip()
         solis_tuple+=(val,)
+        
+        # iteratively build dtype
+        try:
+            dt_solis    = np.dtype(dt_solis.descr + [(key, 'S30')])
+            
+        # the except clause is here because 'Serial Number' key occurs twice
+        # which raises an error
+        except:
+            dt_solis    = np.dtype(dt_solis.descr + [('Serial Number 2', 'S30')])
+        
         count+=1
+    
     
     # construct data np array
     dt_data  = np.dtype([('em_wl', 'f'), ('count', 'i')])
@@ -135,4 +148,4 @@ def read_solis_txt(filepath):
         arr_data.append(tup)
     np_data = np.array(arr_data, dtype=dt_data)
     
-    return solis_tuple, np_data
+    return solis_tuple, dt_solis, np_data

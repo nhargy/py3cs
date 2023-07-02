@@ -1,0 +1,77 @@
+[
+  {
+      "name": "horiba",
+      "device": "horiba",
+      "com": "COM1"
+    },
+  
+  
+    {
+      "name": "spectro",
+      "device": "SolisProxy",
+      "com": "COM7"
+    },
+  
+    {
+      "name": "source_shutter",
+      "device": "FirmataDigitalPin",
+      "com": "COM11"
+      
+    },
+  
+    {
+      "name": "source",
+      "device": "EQ77",
+      "com": "COM8"
+    },
+  
+    {
+      "name": "lpfw",
+      "device": "FW102C",
+      "com": "COM10"
+    },
+  
+    {
+      "name": "lpfw2",
+      "device": "FW102C",
+      "com": "COM21"
+    },
+  
+  
+    {
+      "name": "spfw",
+      "device": "FW102C",
+      "com": "COM9"
+    },
+  
+    {
+      "name": "flipper",
+      "device": "MFF101",
+      "com": "37000021"
+    },
+  
+    {
+      "name": "flipperB",
+      "device": "MFF101",
+      "com": "37002976"
+    },
+  
+    {
+      "name": "power_meter_a",
+      "device": "PM100",
+      "com": "USB0::0x1313::0x8072::P2005497::INSTR"
+    },
+  
+    {
+      "name": "power_meter_b",
+      "device": "PM100",
+      "com": "USB0::0x1313::0x8076::M00580274::INSTR"
+    },
+  
+    {
+      "name": "power_meter_t",
+      "device": "PM100",
+      "com": "USB0::0x1313::0x8076::M00916406::INSTR"
+    }
+
+  ]

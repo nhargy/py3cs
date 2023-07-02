@@ -4,7 +4,8 @@ author  : Nadav Hargittai
 """
 
 import numpy as np
-from auxil import logprint
+from auxil.auxil import logprint
+from auxil.auxil import read_solis_txt
 from datetime import datetime
 import os
 import time

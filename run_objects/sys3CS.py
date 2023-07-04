@@ -580,14 +580,14 @@ class sys3CS:
 
 
 
-    def apply_rules(self, exc_wl, rule_filepath = default_rule):
+    def apply_rules(self, exc_wl):
     
-        logprint(f"Applying rules from {rule_filepath}", self.log_target)
+        logprint(f"Applying rules from {self.rule_filepath}", self.log_target)
         
         self.ctrl(mono_wl=exc_wl)
         
         # extract rules from file
-        with open(rule_filepath) as rules:
+        with open(self.rule_filepath) as rules:
             data   = json.load(rules)
             devices  = data['devices']
             ranges   = data['ranges']
@@ -603,7 +603,7 @@ class sys3CS:
                     try:
                         self.ctrl(**arguments)
                     except:
-                        logprint(f'Did not apply rules from {rule_filepath} to {device} for required value {value}',self.log_target)
+                        logprint(f'Did not apply rules from {self.rule_filepath} to {device} for required value {value}',self.log_target)
             
         logprint(f'Rules applied.',self.log_target)
     

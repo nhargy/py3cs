@@ -4,6 +4,7 @@ author  : Nadav Hargittai
 """
 
 from run_objects.sys3CS import default_rule
+from run_objects.sys3CS import sys3CS
 from auxil.auxil import logprint
 import os
 import numpy as np
@@ -15,6 +16,9 @@ import glob
 # Default system_state_filepath
 path_to_system_state = 'C:/rep_py3cs/py3cs/config/system/states'
 path_to_system_components = 'C:/rep_py3cs/py3cs/config/system/components'
+path_to_scan_protocols  = 'C:/rep_py3cs/py3cs/config/protocols'
+path_to_solis_folder           = 'D:/solis_dump'
+default_protocol = 'default.json'
 default_state = 'state_AA.json'
 
 # group keys
@@ -22,16 +26,17 @@ gp_keys = ["spectra", "system", "log"]
 
 class scan:
     
-    def __init__(self, path_to_hdf5, rule_filepath = default_rule, system_state_filepath = f'{path_to_system_state}/{default_state}'):
+    def __init__(self, path_to_hdf5, rule_filepath = default_rule, system_state_filepath = f'{path_to_system_state}/{default_state}', scan_protocol_filepath = f'{path_to_scan_protocols}/{default_protocol}'):
         
         # now this class can have a method that takes the system state by
         # reading the state json file, and creating a group for each device
         # it can also check for a npy file in the folder of the component,
         # and create a named dataset for it within the group, alongside the id
         
-        self.path_to_hdf5          = path_to_hdf5
-        self.rule_filepath         = rule_filepath
-        self.system_state_filepath = system_state_filepath
+        self.path_to_hdf5           = path_to_hdf5
+        self.rule_filepath          = rule_filepath
+        self.system_state_filepath  = system_state_filepath
+        self.scan_protocol_filepath = scan_protocol_filepath
         
         return None
     
@@ -136,3 +141,132 @@ class scan:
             f.close()
         except:
             pass
+
+
+
+    def go(self, max_wl, min_wl, step, orientation = 'unk'):
+        
+        logprint("Starting scan!", self.path_to_hdf5)
+        
+        path_to_protocol = self.scan_protocol_filepath
+        
+        # extract protocol from scan json file
+        protocol_json = open(path_to_protocol, 'r')
+        time.sleep(0.25)
+        protocol_data = protocol_json.read()
+        protocol_dict = json.loads(protocol_data)
+        
+        print(protocol_dict)
+        
+        path_to_dump = f'{path_to_solis_folder}/solis_temp.txt'
+        
+        ranges = protocol_dict['ranges']
+        times  = protocol_dict['times']
+        spec_offset = protocol_dict['spec_offset'] 
+        sp_samples  = protocol_dict['sp_samples']
+        bg_samples  = protocol_dict['bg_samples']
+        logprint(f"Extracted ranges as: {ranges}", self.path_to_hdf5, toprint=False)
+        logprint(f"Extracted times as: {times}", self.path_to_hdf5, toprint=False)
+        
+        # set the wavelengths of the scan
+        wl_arr = np.arange(max_wl, min_wl - 1, -step)
+        logprint(f"Wavelengths array set to: {wl_arr}", self.path_to_hdf5)
+        
+        # initiate sys3CS object
+        sys = sys3CS(rule_filepath = self.rule_filepath, log_target = self.path_to_hdf5)
+        
+        # loop through wavelengths
+        for wl in wl_arr:
+            
+            print()
+            logprint(" - - - - - - - - - - ", self.path_to_hdf5)
+            logprint(f"Starting scan for {wl} nm", self.path_to_hdf5)
+            print()
+            
+            # set monochromator excitation wavelength
+            sys.ctrl(mono_wl = int(wl), spec_wl = int(wl) + spec_offset)
+            
+            # create the wavelength group
+            f     = h5.File(self.path_to_hdf5, 'a')
+            try:
+                wl_gp = f['spectra'].create_group(str(wl))
+            except:
+                wl_gp = f['spectra'][str(wl)]
+                
+                
+            # create the orientation group
+            try:
+                or_gp = wl_gp.create_group(orientation)
+            except:
+                pass
+                
+            f.close()
+            
+            # find the time array of this wavelength
+            for i in range(0, len(ranges) - 1):
+                if ranges[i] <= wl < ranges[i+1]:
+                    t_arr = times[i]
+            
+            # apply rules
+            sys.apply_rules(wl)
+            
+            for t in t_arr:
+                
+                logprint(f"Taking spectra of {t}sec", self.path_to_hdf5)
+                
+                sys.ctrl(spec_exp = t)
+                
+                sp_data       = []
+                bg_data       = []
+                power_samples = []
+                
+                # take bg data first
+                
+                logprint("Taking background data", self.path_to_hdf5)
+                for i in range(0, bg_samples):
+                    logprint(f' {i}.', self.path_to_hdf5)
+                    sys.ctrl(spec_shutter=True)
+                    sys.ctrl(spec_run=True)
+                    sys.ctrl(spec_shutter=False)
+                    np_data, solis_dict, power_sample = sys.ctrl(spec_save = path_to_dump)
+
+                    time.sleep(0.25)
+                    bg_data.append(np_data)
+                    os.remove(path_to_dump)
+                    time.sleep(0.5)
+                
+                # then take sp data
+                logprint("Taking sample spectra", self.path_to_hdf5)
+                for j in range(0,sp_samples):
+                    logprint(f' {j}.', self.path_to_hdf5)
+                    sys.ctrl(source_shutter_on=True, spec_shutter=True)
+                    sys.ctrl(spec_run=True)
+                    np_data, solis_dict, power_sample = sys.ctrl(spec_save = path_to_dump)
+            
+                    time.sleep(0.25)
+                    sys.ctrl(source_shutter_on=False, spec_shutter=False)
+                    
+                    sp_data.append(np_data)
+                    power_samples.append(power_sample)
+                    os.remove(path_to_dump)
+                    time.sleep(0.5)
+
+                # now create the group, datasets and metadata
+                
+                # group
+                f = h5.File(self.path_to_hdf5, 'a')
+                t_gp = f['spectra'][str(wl)][orientation].create_group(f"{float(t)}sec")
+                
+                # datasets
+                t_gp.create_dataset("bg_data", data = bg_data)
+                t_gp.create_dataset("sp_data", data = sp_data)
+                t_gp.create_dataset("power_samples", data = np.array(power_samples))
+                
+                # metadata
+                state_dict = sys.get_state()
+                state_dict.update(solis_dict)
+                
+                t_gp.attrs.update(state_dict)
+                
+
+        return None

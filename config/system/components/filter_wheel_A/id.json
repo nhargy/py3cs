@@ -1,7 +1,11 @@
 {
-
 	"model"     : "FW102C",
 	"S/N"         : "TP01599370-8160",
-	"function" : "short pass filter wheel"
-	"positions" : {"1" : "FESH0450", "2":"FESH0500", "3":"FESH0550", "4":"FESH0600", "5":"FESH0650", "6":None}
+	"function"  : "short pass filter wheel",
+	"1"              : "FESH0450",
+	"2"              : "FESH0500",
+	"3"              : "FESH0550",
+	"4"              : "FESH0600",
+	"5"              : "FESH0650", 
+	"6"              : "EMPTY"
 }

@@ -1,8 +1,11 @@
 {
-
 	"model"     : "FW102C",
 	"S/N"         : "TP02330548-17481",
 	"function" : "long pass filter wheel 2",
-	"positions" : {"1" : "FELH0650", "2":"FELH0700", "3":"FELH0750", "4":"LP272", "5":"LP325", "6":None}
-
+	"1"             : "FELH0650",
+	"2"             : "FELH0700",
+	"3"             : "FELH0750",
+	"4"             : "LP272",
+	"5"             : "LP325", 
+	"6"             : "EMPTY"
 }

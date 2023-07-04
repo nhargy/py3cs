@@ -451,11 +451,10 @@ class sys3CS:
                         
                     logprint(f"Solis file created.", self.log_target)
                     try:
-                        tup_state, dt_state            = self.get_state(get_tuple=True)
-                        solis_tuple, dt_solis, np_data = read_solis_txt(spec_save)
-                        power_sample                   = self.get_power(pm_b=True)[1]
+                        np_data, solis_dict            = read_solis_txt(spec_save)
+                        power_sample                   = self.get_power(pm_b=True)[1]  # index 1 for power metre b (the sampler)
                         logprint("Extracted data and metadata", self.log_target)
-                        return solis_tuple, tup_state, power_sample, np_data
+                        return np_data, solis_dict, power_sample
                     except Exception as e:
                         logprint("FAILED to extract data and metadata", self.log_target)
                         logprint(e, self.log_target)

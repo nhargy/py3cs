@@ -1,6 +1,6 @@
 {
 
-	"model"      : "FELH0600"
+	"model"      : "FELH0600",
 	"function" : "long pass filter"
 
 }

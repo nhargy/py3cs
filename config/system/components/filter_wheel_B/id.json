@@ -1,0 +1,8 @@
+{
+
+	"model"     : "FW102C",
+	"S/N"         : "TP01599370-8161",
+	"function" : "long pass filter wheel",
+	"positions" : {"1" : "FELH0400", "2":"FELH0450", "3":"FELH0500", "4":"FEL0550", "5":"FELH0600", "6":None}
+
+}

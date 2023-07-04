@@ -1,0 +1,6 @@
+{
+
+	"name"             : "state_AA",
+	"components" : ["energetiq", "flipperB", "pm_t", "horiba_microhr", "filter_wheel_A", "pm_b", "holder_1", "pm_a", "filter_wheel_B", "filter_wheel_C", "spectro"]
+
+}

@@ -12,7 +12,7 @@ import time
 import json
 
 # PATHS
-path_to_rules = 'C:/rep_py3cs/py3cs/rules'; default_rule = f'{path_to_rules}/rule_AA.json'
+path_to_rules = 'C:/rep_py3cs/py3cs/config/rules'; default_rule = f'{path_to_rules}/rule_AA.json'
 
 # DEFAULT SLIT
 mono_slit     = 1000
@@ -145,95 +145,36 @@ class sys3CS:
         
     def get_state(self, get_tuple = False):
         
-        dt_state = np.dtype([('source_power',  np.unicode_, 16),
-                             ('source_shutter_control', np.unicode_, 16),
-                             ('source_shutter_on',  np.unicode_, 16),
-                             ('spf',  np.unicode_, 16),
-                             ('lpf',  np.unicode_, 16),
-                             ('lpf2',  np.unicode_, 16),
-                             ('flipperA', np.unicode_, 16),
-                             ('flipperB', np.unicode_, 16),
-                             ('mono_wl', np.unicode_, 16),
-                             ('mono_gr', np.unicode_, 16),
-                             ('mono_slit', np.unicode_, 16),
-                             ('spec_gr', np.unicode_, 16),
-                             ('spec_shutter', np.unicode_, 16),
-                             ('spec_wl', np.unicode_, 16),
-                             ('spec_exp', np.unicode_,16),
-                             ('pm_a_wl', np.unicode_,16),
-                             ('pm_a_unit', np.unicode_,16),
-                             ('pm_a_count', np.unicode_,16),
-                             ('pm_b_wl', np.unicode_,16),
-                             ('pm_b_unit', np.unicode_,16),
-                             ('pm_b_count', np.unicode_,16),
-                             ('pm_t_wl', np.unicode_,16),
-                             ('pm_t_unit', np.unicode_,16),
-                             ('pm_t_count', np.unicode_,16)
-                             ])
-        
-        if get_tuple == False:
-            np_state = np.array([(self.source_power,
-                                self.source_shutter_control,
-                                self.source_shutter_on,
-                                self.spf,
-                                self.lpf,
-                                self.lpf2,
-                                self.flipperA,
-                                self.flipperB,
-                                self.mono_wl,
-                                self.mono_gr,
-                                self.mono_slit,
-                                self.spec_gr,
-                                self.spec_shutter,
-                                self.spec_wl,
-                                self.spec_exp,
-                                self.pm_a_wl,
-                                self.pm_a_unit,
-                                self.pm_a_count,
-                                self.pm_b_wl,
-                                self.pm_b_unit,
-                                self.pm_b_count,
-                                self.pm_t_wl,
-                                self.pm_t_unit,
-                                self.pm_t_count
-                                )], 
-                                dtype = dt_state)
-            
-            logprint(f"Retrieved system state: {np_state}", self.log_target, toprint=False)
+        state_dict = {
+                    "source_power"            : self.source_power,
+                    "source_shutter_control"  : self.source_shutter_control,
+                    "source_shutter_on"       : self.source_shutter_on,
+                    "spf"                     : self.spf,
+                    "lpf"                     : self.lpf,
+                    "lpf2"                    : self.lpf2,
+                    "flipperA"                : self.flipperA,
+                    "flipperB"                : self.flipperB,
+                    "mono_wl"                 : self.mono_wl,
+                    "mono_gr"                 : self.mono_gr,
+                    "mono_slit"               : self.mono_slit,
+                    "spec_gr"                 : self.spec_gr,
+                    "spec_shutter"            : self.spec_shutter,
+                    "spec_wl"                 : self.spec_wl,
+                    "spec_exp"                : self.spec_exp,
+                    "pm_a_wl"                 : self.pm_a_wl,
+                    "pm_a_unit"               : self.pm_a_unit,
+                    "pm_a_count"              : self.pm_a_count,
+                    "pm_b_wl"                 : self.pm_b_wl,
+                    "pm_b_unit"               : self.pm_b_unit,
+                    "pm_b_count"              : self.pm_b_count,
+                    "pm_t_wl"                 : self.pm_t_wl,
+                    "pm_t_unit"               : self.pm_t_unit,
+                    "pm_t_count"              : self.pm_t_count
+        }
 
-            return np_state
-        
-        elif get_tuple == True:
-            tup_state = (
-                        self.source_power,
-                        self.source_shutter_control,
-                        self.source_shutter_on,
-                        self.spf,
-                        self.lpf,
-                        self.lpf2,
-                        self.flipperA,
-                        self.flipperB,
-                        self.mono_wl,
-                        self.mono_gr,
-                        self.mono_slit,
-                        self.spec_gr,
-                        self.spec_shutter,
-                        self.spec_wl,
-                        self.spec_exp,
-                        self.pm_a_wl,
-                        self.pm_a_unit,
-                        self.pm_a_count,
-                        self.pm_b_wl,
-                        self.pm_b_unit,
-                        self.pm_b_count,
-                        self.pm_t_wl,
-                        self.pm_t_unit,
-                        self.pm_t_count
-                        )
+        logprint(f"Retrieved system state: {state_dict}", self.log_target, toprint=False)
 
-            logprint(f"Retrieved system state: {tup_state}", self.log_target, toprint=False)
-
-            return tup_state, dt_state
+        return state_dict
 
 
 

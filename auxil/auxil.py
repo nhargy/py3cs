@@ -118,22 +118,15 @@ def read_solis_txt(filepath):
     solis_lines = solis.readlines()
     
     # construct metadata tuple and dtype
-    solis_tuple = ()
-    dt_solis    = np.dtype([])
+    solis_dict = {}
     count       = 0
     for key in solis_keys:
         
-        val         = solis_lines[count].split(f'{key}:')[1].strip()
-        solis_tuple+=(val,)
-        
-        # iteratively build dtype
         try:
-            dt_solis    = np.dtype(dt_solis.descr + [(key, 'S30')])
-            
-        # the except clause is here because 'Serial Number' key occurs twice
-        # which raises an error
+            val         = solis_lines[count].split(f'{key}:')[1].strip()
+            solis_dict[key] = val
         except:
-            dt_solis    = np.dtype(dt_solis.descr + [('Serial Number 2', 'S30')])
+            solis_dict[key] = 'NA'
         
         count+=1
     
@@ -148,4 +141,4 @@ def read_solis_txt(filepath):
         arr_data.append(tup)
     np_data = np.array(arr_data, dtype=dt_data)
     
-    return solis_tuple, dt_solis, np_data
+    return np_data, solis_dict

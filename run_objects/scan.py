@@ -162,7 +162,7 @@ class scan:
         
         ranges = protocol_dict['ranges']
         times  = protocol_dict['times']
-        spec_offset = protocol_dict['spec_offset'] 
+        spec_offset = int(protocol_dict['spec_offset']) 
         sp_samples  = protocol_dict['sp_samples']
         bg_samples  = protocol_dict['bg_samples']
         logprint(f"Extracted ranges as: {ranges}", self.path_to_hdf5, toprint=False)
@@ -212,6 +212,7 @@ class scan:
             
             for t in t_arr:
                 
+                logprint(f" * * * ", self.path_to_hdf5)
                 logprint(f"Taking spectra of {t}sec", self.path_to_hdf5)
                 
                 sys.ctrl(spec_exp = t)
@@ -267,6 +268,8 @@ class scan:
                 state_dict.update(solis_dict)
                 
                 t_gp.attrs.update(state_dict)
+                
+                f.close()
                 
 
         return None

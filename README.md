@@ -1,5 +1,5 @@
 # py3cs
-Software package for control and analysis of the 3CS experimental setup and data.
+Software package for control of the 3CS experimental setup and data.
 
 ## run_objects
 Classes the make up the core of the procedure of any measurement.

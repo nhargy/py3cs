@@ -26,7 +26,7 @@ gp_keys = ["spectra", "system", "log"]
 
 class scan:
     
-    def __init__(self, path_to_hdf5, rule_filepath = default_rule, system_state_filepath = f'{path_to_system_state}/{default_state}', scan_protocol_filepath = f'{path_to_scan_protocols}/{default_protocol}'):
+    def __init__(self, path_to_hdf5, sys_obj =None, rule_filepath = default_rule, system_state_filepath = f'{path_to_system_state}/{default_state}', scan_protocol_filepath = f'{path_to_scan_protocols}/{default_protocol}'):
         
         # now this class can have a method that takes the system state by
         # reading the state json file, and creating a group for each device
@@ -37,6 +37,7 @@ class scan:
         self.rule_filepath          = rule_filepath
         self.system_state_filepath  = system_state_filepath
         self.scan_protocol_filepath = scan_protocol_filepath
+        self.sys_obj                = sys_obj
         
         return None
     
@@ -173,7 +174,12 @@ class scan:
         logprint(f"Wavelengths array set to: {wl_arr}", self.path_to_hdf5)
         
         # initiate sys3CS object
-        sys = sys3CS(rule_filepath = self.rule_filepath, log_target = self.path_to_hdf5)
+        if self.sys_obj == None:
+            sys = sys3CS(rule_filepath = self.rule_filepath, log_target = self.path_to_hdf5)
+        else:
+            sys = self.sys_obj
+            sys.log_target = self.path_to_hdf5
+            sys.rule_filepath = self.rule_filepath
         
         # loop through wavelengths
         for wl in wl_arr:

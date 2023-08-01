@@ -195,6 +195,7 @@ class sys3CS:
              spec_exp               = None,
              spec_run               = None,
              spec_save              = None,
+             spec_clear_screen      = None,
              pm_a_wl                = None,
              pm_a_unit              = None,
              pm_a_count             = None,
@@ -365,6 +366,13 @@ class sys3CS:
                     
                     
         # spectrograph
+        if spec_clear_screen != None:
+            logprint("Clearing screen", self.log_target)
+            try:
+                self.s.spectro.clear_screen = True
+            except:
+                logprint("Failed to issue command", self.log_target)
+        
         if spec_gr != None:
             if self.spec_gr == spec_gr:
                 logprint(f"spec_gr already set to {spec_gr}", self.log_target)
@@ -454,6 +462,9 @@ class sys3CS:
                         np_data, solis_dict            = read_solis_txt(spec_save)
                         power_sample                   = self.get_power(pm_b=True)[1]  # index 1 for power metre b (the sampler)
                         logprint("Extracted data and metadata", self.log_target)
+                        
+                        self.ctrl(spec_clear_screen=True) # clear the screen!
+                        
                         return np_data, solis_dict, power_sample
                     except Exception as e:
                         logprint("FAILED to extract data and metadata", self.log_target)
@@ -463,7 +474,7 @@ class sys3CS:
                 except:
                     logprint("Failed to issue command", self.log_target)
             else:
-                logprint("INPUT ERROR: spec_save must be a string", self.log_target)  
+                logprint("INPUT ERROR: spec_save must be a string", self.log_target)
     
     
         # power metres

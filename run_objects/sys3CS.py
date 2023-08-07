@@ -12,7 +12,7 @@ import time
 import json
 
 # PATHS
-path_to_rules = 'C:/rep_py3cs/py3cs/config/rules'; default_rule = f'{path_to_rules}/rule_AA.json'
+path_to_rules = 'C:/rep_py3cs/py3cs/config/rules'; default_rule = f'{path_to_rules}/rule_BB.json'
 
 # DEFAULT SLIT
 mono_slit     = 1000
@@ -591,11 +591,12 @@ class sys3CS:
 
 
 
-    def apply_rules(self, exc_wl):
+    def apply_rules(self, exc_wl, apply_exc = True):
     
         logprint(f"Applying rules from {self.rule_filepath}", self.log_target)
         
-        self.ctrl(mono_wl=exc_wl)
+        if apply_exc:
+            self.ctrl(mono_wl=exc_wl)
         
         # extract rules from file
         with open(self.rule_filepath) as rules:

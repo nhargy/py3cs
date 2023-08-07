@@ -1,0 +1,7 @@
+{
+	"ranges" : [250, 800],
+	"times"   : [[60]],
+	"spec_offset" : 175,
+	"sp_samples" : 1,
+	"bg_samples" : 1 
+}

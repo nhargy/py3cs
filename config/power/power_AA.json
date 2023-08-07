@@ -1,0 +1,7 @@
+{
+	"power"     : "power_AA",
+	"min_wl"   : 400,
+	"max_wl"  : 400,
+	"step"        : 1,
+	"samples" : 10 
+}

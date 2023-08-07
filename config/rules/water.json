@@ -1,0 +1,16 @@
+{
+	"rule": "zno",
+
+	"devices": ["spf",
+"lpf",
+"lpf2",
+"spec_gr",
+"mono_gr"
+],
+
+	"ranges": [
+200,800],
+
+	"states": [[1,2,6,2,1]]
+
+}

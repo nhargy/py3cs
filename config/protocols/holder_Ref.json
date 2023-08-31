@@ -2,6 +2,6 @@
 	"ranges" : [200, 800],
 	"times"   : [[30]],
 	"spec_offset" : 200,
-	"sp_samples" : 3,
+	"sp_samples" : 1,
 	"bg_samples" : 1
 }

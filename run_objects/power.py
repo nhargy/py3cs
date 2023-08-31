@@ -62,8 +62,8 @@ class power:
                 # apply rule only to spf
                 for i in range(len(self.ranges)-1):
                     if self.ranges[i] <= wl < self.ranges[i+1]:
-                        device    = self.devices[0]
-                        value     = self.states[i][0]
+                        device    = self.devices[1]
+                        value     = self.states[i][1]
                         arguments = {device:value}
                         try:
                             self.sys.ctrl(**arguments)
@@ -79,6 +79,7 @@ class power:
             
         self.sys.ctrl(source_shutter_on=False)
             
+        output.append(wl_arr)
         np.save(self.path_to_save, output)
             
             

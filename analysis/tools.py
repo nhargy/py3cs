@@ -41,7 +41,7 @@ def two_gauss(x,m1,m2,s1,s2,A1,A2):
     return gaussian(x,m1,s1,A1) + gaussian(x,m2,s2,A2)
 
 
-def plot(scan, wl,t, ori='unk', plot=True, label=None, y_lim = None, color = 'darkblue'):
+def plot_it(scan, wl,t, ori='unk', plot=True, label=None, y_lim = None, color = 'darkblue'):
     
     df     = scan.df.loc[(f'{wl}', f'{ori}', f'{t}sec')]
     meta   = scan.meta_df.loc[(f'{wl}', f'{ori}', f'{t}sec')]
@@ -116,14 +116,25 @@ def get_diff(scan1, scan2, wl, t, ori, toplot = True, y_lim = [-0.2,2.5], color=
 
 def extract_species(path, species):
 
-    path_to_species = f'{path}/{species}'
-
     species_dict = {}
     count        = 1
 
-    coll_exists  = os.path.exists(f'{path_to_species}/'coll1')
+    coll_exists  = os.path.exists(f'{path}/coll{count}')
     while coll_exists:
+        path_to_species = f'{path}/coll{count}/{species}'   # folder of species in this collection
 
-    
+        coll_dict = {}
 
-    return None
+        files = os.listdir(path_to_species)                 # list all saved files in directory 
+
+        for file in files:
+            key = file.split('.')[0]
+            obj = scan.scan(f'{path_to_species}/{file}')
+
+            coll_dict[key] = obj
+
+        species_dict[f'coll{count}'] = coll_dict
+        count+=1
+        coll_exists  = os.path.exists(f'{path}/coll{count}')
+
+    return species_dict

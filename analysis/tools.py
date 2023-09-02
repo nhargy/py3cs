@@ -96,7 +96,7 @@ def plot_it(scan, wl,t, ori='unk', plot=True, label=None, y_lim = None, color = 
 
 def get_diff(scan1, scan2, wl, t, ori, toplot = True, y_lim = [-0.2,2.5], color='darkblue', label=None):
 
-    sp_x_1, sp_norm_1 = plot(scan1, wl, t, ori=ori, plot=False);  sp_x_2, sp_norm_2 =  plot(scan2, wl, t, ori=ori, plot=False)
+    sp_x_1, sp_norm_1 = plot_it(scan1, wl, t, ori=ori, plot=False);  sp_x_2, sp_norm_2 =  plot_it(scan2, wl, t, ori=ori, plot=False)
     diff = np.subtract(sp_norm_2, sp_norm_1)
     plt.plot(sp_x_1, diff, color=color, label = label)
     plt.grid("on")

@@ -3,5 +3,5 @@
 	"min_wl"   : 250,
 	"max_wl"  : 800,
 	"step"        : 5,
-	"samples" : 3 
+	"samples" : 5 
 }

@@ -15,7 +15,7 @@ import json
 path_to_rules = 'C:/rep_py3cs/py3cs/config/rules'; default_rule = f'{path_to_rules}/rule_BB.json'
 
 # DEFAULT SLIT
-mono_slit     = 2250
+mono_slit     = 950
 
 from devserve.clients import SystemClient
 

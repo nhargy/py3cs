@@ -19,7 +19,7 @@ path_to_system_components = 'C:/rep_py3cs/py3cs/config/system/components'
 path_to_scan_protocols  = 'C:/rep_py3cs/py3cs/config/protocols'
 path_to_solis_folder           = 'D:/solis_dump'
 default_protocol = 'default.json'
-default_state = 'state_AA.json'
+default_state = 'state_master_neutrons.json'
 
 # group keys
 gp_keys = ["spectra", "system", "log"]

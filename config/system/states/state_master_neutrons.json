@@ -1,0 +1,6 @@
+{
+
+	"name"             : "state_master_neutrons",
+	"components" : ["energetiq", "horiba_microhr", "filter_wheel_A", "pm_b", "holder_1", "filter_wheel_B", "filter_wheel_C", "spectro"]
+
+}

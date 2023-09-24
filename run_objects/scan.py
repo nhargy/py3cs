@@ -145,7 +145,7 @@ class scan:
 
 
 
-    def go(self, max_wl, min_wl, step, orientation = 'unk'):
+    def go(self, max_wl, min_wl, step, orientation = '0'):
         
         logprint("Starting scan!", self.path_to_hdf5)
         

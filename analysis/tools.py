@@ -41,13 +41,13 @@ def two_gauss(x,m1,m2,s1,s2,A1,A2):
     return gaussian(x,m1,s1,A1) + gaussian(x,m2,s2,A2)
 
 
-def plot_it(scan, wl,t, ori='unk', plot=True, label=None, y_lim = None, color = 'darkblue'):
+def plot_it(scan, wl,t, ori='0', plot=True, label=None, y_lim = None, color = 'darkblue', it = '0'):
     
     df     = scan.df.loc[(f'{wl}', f'{ori}', f'{t}sec')]
     meta   = scan.meta_df.loc[(f'{wl}', f'{ori}', f'{t}sec')]
-    pw     = float(meta['pw'][0])
+    pw     = float(meta['pw'][int(it)]) ###
 
-    sp_x   = np.array(df.loc[('sp_0')]['em_wl']);  sp_y   = np.array(df.loc[('sp_0')]['count'])
+    sp_x   = np.array(df.loc[(f'sp_{it}')]['em_wl']);  sp_y   = np.array(df.loc[(f'sp_{it}')]['count']) ###
     bg_x   = np.array(df.loc[('bg_0')]['em_wl']);  bg_y   = np.array(df.loc[('bg_0')]['count'])
     
     sp_sub = np.subtract(sp_y, bg_y)
@@ -108,20 +108,19 @@ def get_diff(scan1, scan2, wl, t, ori, toplot = True, y_lim = [-0.2,2.5], color=
     return sp_x_1, diff
 
 
+def extract_species(path, species, ext = None): # ext is simply if the species folder is further subdivided into more folders
 
-# a function that takes path to study, species and returns dictionary of scan objects
-# ordered as follows: the keys are the collections "coll1" : {"500" : sample, "501" : sample2} ...
-# zno['coll1']['500'] gives the scan object
-# define the dicts as global variables
 
-def extract_species(path, species):
 
     species_dict = {}
     count        = 1
 
     coll_exists  = os.path.exists(f'{path}/coll{count}')
     while coll_exists:
-        path_to_species = f'{path}/coll{count}/{species}'   # folder of species in this collection
+        if ext != None:
+            path_to_species = f'{path}/coll{count}/{species}/{ext}'
+        else:
+            path_to_species = f'{path}/coll{count}/{species}'   # folder of species in this collection
 
         coll_dict = {}
 

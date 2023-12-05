@@ -145,7 +145,7 @@ class scan:
 
 
 
-    def go(self, max_wl, min_wl, step, orientation = '0'):
+    def go(self, max_wl, min_wl, step, orientation = '0', spec_wl_const = None):
         
         logprint("Starting scan!", self.path_to_hdf5)
         
@@ -190,7 +190,13 @@ class scan:
             print()
             
             # set monochromator excitation wavelength
-            sys.ctrl(mono_wl = int(wl), spec_wl = int(wl) + spec_offset)
+            sys.ctrl(mono_wl = int(wl))
+            
+            if spec_wl_const == None:
+                spec_wl = int(wl) + spec_offset
+            else:
+                spec_wl = int(spec_wl_const)
+                
             
             # create the wavelength group
             f     = h5.File(self.path_to_hdf5, 'a')

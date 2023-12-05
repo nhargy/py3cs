@@ -158,6 +158,7 @@ class SolisProxy(Device):
             raise ValueError(f"Unrecognized running status {running}")
 
         self.command('Run')
+        print('Wehhey!')
         while True:
             try:
                 if self.conn.read(150) == b"Done\r\n":
